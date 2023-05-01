@@ -1,0 +1,6 @@
+{
+  "preset": "jest-expo",
+  "coverageReporters": [
+    "html"
+  ]
+}
