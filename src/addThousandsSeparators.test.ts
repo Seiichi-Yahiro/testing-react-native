@@ -1,4 +1,4 @@
-import addThousandsSeparators from "./addThousandsSeparators";
+import addThousandsSeparators from './addThousandsSeparators';
 
 describe('integers', () => {
     it('should not add thousands separators when <= 3 digits', () => {
