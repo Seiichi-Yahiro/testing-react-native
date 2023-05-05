@@ -1,14 +1,23 @@
 import React from 'react';
-import { FlatList, View, Text, StyleSheet, Button } from 'react-native';
+import {
+    FlatList,
+    View,
+    Text,
+    StyleSheet,
+    Button,
+    ActivityIndicator,
+} from 'react-native';
 import addThousandsSeparators from './addThousandsSeparators';
 import useFetch, { FetchStatus } from './useFetch';
 
 interface ProductListProps {}
 
 const ProductList: React.FC<ProductListProps> = () => {
-    const { data: products, status } = useFetch<Product[]>(
-        'https://api.example.com/products'
-    );
+    const {
+        data: products,
+        status,
+        retry,
+    } = useFetch<Product[]>('https://api.example.com/products');
 
     const renderProduct = ({ item }: { item: Product }) => (
         <View style={styles.product}>
@@ -24,7 +33,7 @@ const ProductList: React.FC<ProductListProps> = () => {
             case FetchStatus.NotStarted:
                 return;
             case FetchStatus.Pending:
-                return <Text>Pending</Text>;
+                return <ActivityIndicator testID={'activityIndicator'} />;
             case FetchStatus.Successful:
                 return (
                     products && (
@@ -36,7 +45,7 @@ const ProductList: React.FC<ProductListProps> = () => {
                     )
                 );
             case FetchStatus.Failed:
-                return <Button title={'Retry'} onPress={() => {}} />;
+                return <Button title={'Retry'} onPress={retry} />;
         }
     };
 
