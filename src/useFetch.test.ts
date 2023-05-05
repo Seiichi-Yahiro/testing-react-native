@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react-native';
+import { act, renderHook, waitFor } from '@testing-library/react-native';
 import useFetch, { FetchStatus } from './useFetch';
 
 describe('useFetch hook', () => {
@@ -104,5 +104,40 @@ describe('useFetch hook', () => {
         await waitFor(() =>
             expect(result.current.status).toBe(FetchStatus.Failed)
         );
+    });
+
+    it('retry should fetch again', async () => {
+        const mockedApiResult = ['a'];
+
+        jest.spyOn(global, 'fetch')
+            .mockImplementationOnce(() => Promise.reject())
+            .mockImplementationOnce(
+                () =>
+                    new Promise((resolve) => {
+                        setTimeout(() => {
+                            const result = Promise.resolve({
+                                ok: true,
+                                json: () => Promise.resolve(mockedApiResult),
+                            } as Response);
+                            resolve(result);
+                        }, 200);
+                    })
+            );
+
+        const { result } = renderHook(() =>
+            useFetch<string[]>('https://mock.example.com/products')
+        );
+
+        await waitFor(() =>
+            expect(result.current.status).toBe(FetchStatus.Failed)
+        );
+
+        await act(result.current.retry);
+
+        await waitFor(() =>
+            expect(result.current.status).toBe(FetchStatus.Successful)
+        );
+
+        expect(result.current.data).toEqual(mockedApiResult);
     });
 });
