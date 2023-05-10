@@ -1,8 +1,9 @@
 ---
 marp: true
-theme: uncover
+theme: default
 class: 
     - invert
+
 ---
 
 # Testing React Native
@@ -23,30 +24,32 @@ class:
 
 ## Motivation
 
----
-
-## Statische Code-Analyse
-
-- Linter
-    - Unused Code
-    - Pitfalls
-    - Style Guide
-- Type Checking
+- Code-Qualität
+   - Stellt sicher, dass der Code funktioniert
+- Zeitersparnis
+    - Probleme können frühzeitig erkannt werden bevor sie zu größeren Problemen werden
+- Dokumentation
+    - Zeigen wie der Code verwendet werden sollte und welche Ergebnisse zu erwarten sind
 
 ---
 
 ## Testbarer Code
 
-- Aufteilen des Codes in mehrere Files
-- Relativ kleine Funktionen
-- Pure Funktions
+- Kleine und fokussierte Komponenten / Funktionen
+- Pure Functions / Props verwenden
 - Trennen von Logic und UI
+- Test Driven Development
 
 ---
 
 ## Setup
 
 Testframework Jest installieren
+
+- jest
+- @types/jest
+- jest-expo
+
 ```
 npm install jest @types/jest jest-expo --save-dev
 ```
@@ -80,7 +83,7 @@ src/components/__tests__/myComponent.test.ts
 Tests in eigenem Ordner
 ```
 src/components/myComponent.ts
-__tests__/components/myComponent.test.js
+__tests__/components/myComponent.test.ts
 ```
 
 
@@ -89,7 +92,7 @@ __tests__/components/myComponent.test.js
 ## Tests schreiben
 
 
-```JavaScript
+```js
 it('should add thousands separators to integers', () => {
     const result = addThousandsSeparators('1234567890');
     const expected = '1,234,567,890';
@@ -98,7 +101,7 @@ it('should add thousands separators to integers', () => {
 });
 ```
 
-```JavaScript
+```js
 test('floats should not have thousands separators after the decimal point', () => {
     const result = addThousandsSeparators('12345.67890');
     const expected = '12,345.67890';
@@ -111,7 +114,7 @@ test('floats should not have thousands separators after the decimal point', () =
 
 ## Gruppieren von Tests
 
-```JavaScript
+```js
 describe('Thousands separator', () => {
     it(...);
     it(...);
@@ -127,13 +130,13 @@ describe('Thousands separator', () => {
 ## Matchers
 
 Gleichheit
-```JavaScript
+```js
 expect(x).toBe(y); // Exakte Gleichheit
 expect(x).toEqual(y); // Inhaltliche Gleichheit
 ```
 
 Wahrheit
-```JavaScript
+```js
 expect(x).toBeUndefined();
 expect(x).not.toBeUndefined();
 expect(x).toBeNull();
@@ -146,13 +149,13 @@ expect(x).toBeFalsy();
 ## Matchers
 
 Zahlen
-```JavaScript
+```js
 expect(x).toBeGreatherThan(y);
 expect(x).toBeLessThanOrEqual(y);
 ```
 
 Arrays und Exceptions
-```JavaScript
+```js
 expect(x).toContain(y);
 expect(x).toThrow(myError);
 ```
@@ -161,8 +164,8 @@ expect(x).toThrow(myError);
 
 ## Async Tests
 
-```JavaScript
-it('', async () => {
+```js
+it('should fetch something', async () => {
     const data = await fetchFromAPI();
     expect(data).toEqual(...);
 });
@@ -170,7 +173,108 @@ it('', async () => {
 
 ---
 
+## Component Tests Setup
+
+* @testing-library/react-native
+* @testing-library/jest-native
+* react-test-renderer
+
+```
+npm install --save-dev @testing-library/react-native @testing-library/jest-native react-test-renderer
+```
+
+jest.config.json
+```json
+{
+    "setupFilesAfterEnv": ["@testing-library/jest-native/extend-expect"]
+}
+```
+
+---
+
 ## Component Tests
+
+- Interaktion
+    - Testen wie der User mit der Komponente interagiert
+    - Was ändert sich durch eine Interaktion (z.B. ein Button wurde gedrückt)
+    - Nicht den State change an sich testen sondern was wird dem User präsentiert
+- Rendering
+    - Aussehen und positionierung von Elementen
+
+---
+
+## Einfacher Render Test
+
+```tsx
+it('should add thousand separators to the price', () => {
+    render(<Product item={{ id: '1', name: 'Foo', price: 234599 }} />);
+
+    expect(screen.getByText('2,345.99€')).toBeOnTheScreen();
+});
+```
+
+---
+
+## Mocking
+
+Erstellung eines Objektes, das den Funktionsumfang von realen Objekten nachahmt.
+
+```ts
+const mockedPlay = jest.fn();
+const videoPlayerButtons = { play: mockedPlay, stop: () => {...} };
+const mockedStop = jest.spyOn(videoPlayerButtons, 'stop');
+
+mockedPlay.mockReturnValue(42);
+mockedStop.mockImplementation((x) => x + 42);
+
+const videoPlayer = new VideoPlayer(videoPlayerButtons);
+
+expect(mockedPlay).toHaveBeenCalledTimes(1);
+expect(mockedStop).toHaveBeenCalledWith(8);
+```
+
+---
+
+## Interaktion
+
+```ts
+fireEvent.press(button);
+
+fireEvent.changeText(input, 'new Text');
+
+fireEvent.scroll(scrollView, {
+  nativeEvent: {
+    contentOffset: {
+      y: 200,
+    },
+  },
+});
+```
+
+---
+
+## Mocking und Interaktion
+
+```tsx
+import * as useFetch from './useFetch';
+
+it('should be able to retry a failed api call', () => {
+    const retry = jest.fn();
+
+    jest.spyOn(useFetch, 'default').mockReturnValueOnce({
+        status: useFetch.FetchStatus.Failed,
+        retry,
+    });
+
+    render(<ProductList />);
+
+    const retryButton = screen.getByText('Retry');
+    expect(retryButton).toBeOnTheScreen();
+
+    fireEvent.press(retryButton);
+    expect(retry).toBeCalledTimes(1);
+});
+```
 
 ---
 
