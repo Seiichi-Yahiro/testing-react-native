@@ -19,15 +19,6 @@ const ProductList: React.FC<ProductListProps> = () => {
         retry,
     } = useFetch<Product[]>('https://api.example.com/products');
 
-    const renderProduct = ({ item }: { item: Product }) => (
-        <View style={styles.product}>
-            <Text style={styles.productName}>{item.name}</Text>
-            <Text style={styles.productPrice}>
-                {addThousandsSeparators((item.price / 100).toString())}
-            </Text>
-        </View>
-    );
-
     const renderContent = () => {
         switch (status) {
             case FetchStatus.NotStarted:
@@ -39,7 +30,7 @@ const ProductList: React.FC<ProductListProps> = () => {
                     products && (
                         <FlatList
                             data={products}
-                            renderItem={renderProduct}
+                            renderItem={Product}
                             keyExtractor={(item) => item.id}
                         />
                     )
@@ -51,6 +42,18 @@ const ProductList: React.FC<ProductListProps> = () => {
 
     return <View style={styles.container}>{renderContent()}</View>;
 };
+
+export interface ProductProps {
+    item: Product;
+}
+export const Product: React.FC<ProductProps> = ({ item }) => (
+    <View style={styles.product}>
+        <Text style={styles.productName}>{item.name}</Text>
+        <Text style={styles.productPrice}>
+            {addThousandsSeparators((item.price / 100).toString())}€
+        </Text>
+    </View>
+);
 
 export interface Product {
     id: string;
