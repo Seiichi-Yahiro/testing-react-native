@@ -241,6 +241,7 @@ expect(mockedStop).toHaveBeenCalledWith(8);
 
 ## Interaktion
 
+Vordefinierte Events
 ```ts
 fireEvent.press(button);
 
@@ -253,6 +254,12 @@ fireEvent.scroll(scrollView, {
     },
   },
 });
+```
+
+Beliebige Events
+```ts
+fireEvent(button, 'pressIn');
+fireEvent(button, 'longPress');
 ```
 
 ---
