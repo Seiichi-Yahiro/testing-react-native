@@ -283,3 +283,12 @@ it('should be able to retry a failed api call', () => {
 ---
 
 ## Zusammenfassung
+
+---
+
+## Quellen
+### Webseiten:
+
+Jest: [https://jestjs.io](https://jestjs.io)
+React Native Testing Library: [https://callstack.github.io/react-native-testing-library/](https://callstack.github.io/react-native-testing-library/)
+React Native: [https://reactnative.dev/docs/testing-overview](https://reactnative.dev/docs/testing-overview)
