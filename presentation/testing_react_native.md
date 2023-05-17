@@ -6,7 +6,11 @@ class:
 
 ---
 
+<style scoped>section { justify-content: start; }</style>
+
 # Testing React Native
+
+![bg 70%](diagram_testing.svg)
 
 ---
 
