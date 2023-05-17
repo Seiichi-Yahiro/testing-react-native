@@ -1,13 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import {
-    FlatList,
-    View,
-    Text,
-    StyleSheet,
-    Button,
-    ActivityIndicator,
-    TextInput,
-} from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { FlatList, View, Text, StyleSheet, TextInput } from 'react-native';
+import { ProductI } from './ProductListTypes';
 import addThousandsSeparators from './addThousandsSeparators';
 import useFetch, { FetchStatus } from './useFetch';
 
@@ -18,9 +11,19 @@ const ProductList: React.FC<ProductListProps> = () => {
         data: products,
         status,
         retry,
-    } = useFetch<Product[]>('https://api.example.com/products');
+    } = useFetch<ProductI[]>('https://api.example.com/products');
 
     const [filteredProducts, setFilteredProducts] = useState(products ?? []);
+
+    const onSearch = useCallback(
+        (text: string) => {
+            const filtered = (products ?? []).filter((product) =>
+                product.name.includes(text)
+            );
+            setFilteredProducts(filtered);
+        },
+        [products]
+    );
 
     useEffect(() => {
         if (products) {
@@ -28,43 +31,29 @@ const ProductList: React.FC<ProductListProps> = () => {
         }
     }, [products]);
 
-    const renderContent = () => {
-        switch (status) {
-            case FetchStatus.NotStarted:
-                return;
-            case FetchStatus.Pending:
-                return <ActivityIndicator testID={'activityIndicator'} />;
-            case FetchStatus.Successful:
-                return (
-                    products && (
-                        <>
-                            <TextInput
-                                placeholder={'Search'}
-                                onChangeText={(text) => {
-                                    const filtered = products.filter(
-                                        (product) => product.name.includes(text)
-                                    );
-                                    setFilteredProducts(filtered);
-                                }}
-                            />
-                            <FlatList
-                                data={filteredProducts}
-                                renderItem={Product}
-                                keyExtractor={(item) => item.id}
-                            />
-                        </>
-                    )
-                );
-            case FetchStatus.Failed:
-                return <Button title={'Retry'} onPress={retry} />;
-        }
-    };
-
-    return <View style={styles.container}>{renderContent()}</View>;
+    return (
+        <View style={styles.container}>
+            <TextInput
+                style={styles.search}
+                placeholder={'Search'}
+                onChangeText={onSearch}
+            />
+            <View style={{ height: 500 }}>
+                <FlatList
+                    data={filteredProducts}
+                    renderItem={Product}
+                    keyExtractor={(item) => item.id}
+                    onRefresh={retry}
+                    refreshing={status === FetchStatus.Pending}
+                    ListEmptyComponent={<Text>No products found</Text>}
+                />
+            </View>
+        </View>
+    );
 };
 
 export interface ProductProps {
-    item: Product;
+    item: ProductI;
 }
 export const Product: React.FC<ProductProps> = ({ item }) => (
     <View style={styles.product}>
@@ -75,17 +64,16 @@ export const Product: React.FC<ProductProps> = ({ item }) => (
     </View>
 );
 
-export interface Product {
-    id: string;
-    name: string;
-    price: number;
-}
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
         justifyContent: 'center',
+    },
+    search: {
+        borderStyle: 'solid',
+        borderWidth: 1,
+        padding: 5,
     },
     product: {
         borderBottomWidth: 1,

@@ -2,14 +2,15 @@ import * as useFetch from './useFetch';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import ProductList, { Product } from './ProductList';
 import '@testing-library/jest-native/extend-expect';
+import { ProductI } from './ProductListTypes';
 
 describe('Product List', () => {
     afterEach(() => jest.restoreAllMocks());
 
     it('should render the data from the api', () => {
-        const mockedReturnData: Product[] = [
-            { id: '1', name: 'Foo', price: 199 },
-            { id: '2', name: 'Foo 2', price: 299 },
+        const mockedReturnData: ProductI[] = [
+            { id: '1', name: 'Apple', price: 199 },
+            { id: '2', name: 'Orange', price: 299 },
         ];
 
         jest.spyOn(useFetch, 'default').mockReturnValueOnce({
@@ -20,25 +21,26 @@ describe('Product List', () => {
 
         render(<ProductList />);
 
-        expect(screen.getByText('Foo')).toBeOnTheScreen();
-        expect(screen.getByText('Foo 2')).toBeOnTheScreen();
+        expect(screen.getByText('Apple')).toBeOnTheScreen();
+        expect(screen.getByText('Orange')).toBeOnTheScreen();
 
         expect(screen.getByText('1.99€')).toBeOnTheScreen();
         expect(screen.getByText('2.99€')).toBeOnTheScreen();
     });
 
-    it('should render a pending text while waiting for the api', () => {
+    it('should inform when product list is empty', () => {
         jest.spyOn(useFetch, 'default').mockReturnValueOnce({
-            status: useFetch.FetchStatus.Pending,
+            data: [],
+            status: useFetch.FetchStatus.Successful,
             retry: () => {},
         });
 
         render(<ProductList />);
 
-        expect(screen.getByTestId('activityIndicator')).toBeOnTheScreen();
+        expect(screen.getByText('No products found')).toBeOnTheScreen();
     });
 
-    it('should be able to retry a failed api call', () => {
+    it('should call retry on list refresh', () => {
         const retry = jest.fn();
 
         jest.spyOn(useFetch, 'default').mockReturnValueOnce({
@@ -48,10 +50,8 @@ describe('Product List', () => {
 
         render(<ProductList />);
 
-        const retryButton = screen.getByText('Retry');
-        expect(retryButton).toBeOnTheScreen();
+        fireEvent(screen.getByText('No products found'), 'refresh');
 
-        fireEvent.press(retryButton);
         expect(retry).toBeCalledTimes(1);
     });
 
@@ -77,7 +77,7 @@ describe('Product List', () => {
 
     describe('Filter products', () => {
         it('should display all products after emptying search field', () => {
-            const mockedReturnData: Product[] = [
+            const mockedReturnData: ProductI[] = [
                 { id: '1', name: 'Apple', price: 199 },
                 { id: '2', name: 'Orange', price: 299 },
                 { id: '3', name: 'Apple Juice', price: 399 },
@@ -104,7 +104,7 @@ describe('Product List', () => {
         });
 
         it('should search for products that contain the word Orange', () => {
-            const mockedReturnData: Product[] = [
+            const mockedReturnData: ProductI[] = [
                 { id: '1', name: 'Apple', price: 199 },
                 { id: '2', name: 'Orange', price: 299 },
                 { id: '3', name: 'Apple Juice', price: 399 },
