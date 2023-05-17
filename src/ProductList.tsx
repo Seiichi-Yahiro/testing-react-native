@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     FlatList,
     View,
@@ -6,6 +6,7 @@ import {
     StyleSheet,
     Button,
     ActivityIndicator,
+    TextInput,
 } from 'react-native';
 import addThousandsSeparators from './addThousandsSeparators';
 import useFetch, { FetchStatus } from './useFetch';
@@ -19,6 +20,14 @@ const ProductList: React.FC<ProductListProps> = () => {
         retry,
     } = useFetch<Product[]>('https://api.example.com/products');
 
+    const [filteredProducts, setFilteredProducts] = useState(products ?? []);
+
+    useEffect(() => {
+        if (products) {
+            setFilteredProducts(products);
+        }
+    }, [products]);
+
     const renderContent = () => {
         switch (status) {
             case FetchStatus.NotStarted:
@@ -28,11 +37,22 @@ const ProductList: React.FC<ProductListProps> = () => {
             case FetchStatus.Successful:
                 return (
                     products && (
-                        <FlatList
-                            data={products}
-                            renderItem={Product}
-                            keyExtractor={(item) => item.id}
-                        />
+                        <>
+                            <TextInput
+                                placeholder={'Search'}
+                                onChangeText={(text) => {
+                                    const filtered = products.filter(
+                                        (product) => product.name.includes(text)
+                                    );
+                                    setFilteredProducts(filtered);
+                                }}
+                            />
+                            <FlatList
+                                data={filteredProducts}
+                                renderItem={Product}
+                                keyExtractor={(item) => item.id}
+                            />
+                        </>
                     )
                 );
             case FetchStatus.Failed:
@@ -65,7 +85,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
         justifyContent: 'center',
     },
     product: {

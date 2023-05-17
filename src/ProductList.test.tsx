@@ -74,4 +74,66 @@ describe('Product List', () => {
             expect(screen.getByText('2,345.99€')).toBeOnTheScreen();
         });
     });
+
+    describe('Filter products', () => {
+        it('should display all products after emptying search field', () => {
+            const mockedReturnData: Product[] = [
+                { id: '1', name: 'Apple', price: 199 },
+                { id: '2', name: 'Orange', price: 299 },
+                { id: '3', name: 'Apple Juice', price: 399 },
+                { id: '4', name: 'Orange Juice', price: 499 },
+            ];
+
+            jest.spyOn(useFetch, 'default').mockReturnValue({
+                status: useFetch.FetchStatus.Successful,
+                data: mockedReturnData,
+                retry: () => {},
+            });
+
+            render(<ProductList />);
+
+            const textInput = screen.getByPlaceholderText('Search');
+
+            fireEvent.changeText(textInput, 'Orange');
+            fireEvent.changeText(textInput, '');
+
+            expect(screen.getByText('Apple')).toBeOnTheScreen();
+            expect(screen.getByText('Apple Juice')).toBeOnTheScreen();
+            expect(screen.getByText('Orange')).toBeOnTheScreen();
+            expect(screen.getByText('Orange Juice')).toBeOnTheScreen();
+        });
+
+        it('should search for products that contain the word Orange', () => {
+            const mockedReturnData: Product[] = [
+                { id: '1', name: 'Apple', price: 199 },
+                { id: '2', name: 'Orange', price: 299 },
+                { id: '3', name: 'Apple Juice', price: 399 },
+                { id: '4', name: 'Orange Juice', price: 499 },
+            ];
+
+            jest.spyOn(useFetch, 'default').mockReturnValue({
+                status: useFetch.FetchStatus.Successful,
+                data: mockedReturnData,
+                retry: () => {},
+            });
+
+            render(<ProductList />);
+
+            const apple = screen.getByText('Apple');
+            const appleJuice = screen.getByText('Apple Juice');
+
+            const orange = screen.getByText('Orange');
+            const orangeJuice = screen.getByText('Orange Juice');
+
+            fireEvent.changeText(
+                screen.getByPlaceholderText('Search'),
+                'Orange'
+            );
+
+            expect(orange).toBeOnTheScreen();
+            expect(orangeJuice).toBeOnTheScreen();
+            expect(apple).not.toBeOnTheScreen();
+            expect(appleJuice).not.toBeOnTheScreen();
+        });
+    });
 });
