@@ -10,7 +10,7 @@ class:
 
 # Testing React Native
 
-![bg 70%](diagram_testing.svg)
+![bg 65%](diagram_testing.svg)
 
 ---
 
@@ -43,6 +43,19 @@ class:
 - Pure Functions / Props verwenden
 - Trennen von Logic und UI
 - Test Driven Development
+
+
+---
+
+## Jest
+
+- Eine Test-Laufzeitumgebung von Facebook
+- Unterstützt Snapshot-Tests, Unit-Tests, Integrationstests und End-to-End-Tests
+- Code Coverage
+- Mocking
+- Einfach zu konfigurieren und auszuführen
+
+![bg right 50%](jest_logo.png)
 
 ---
 
@@ -114,6 +127,34 @@ test('floats should not have thousands separators after the decimal point', () =
 });
 ```
 
+Ausführen
+```
+npm test
+yarn test
+```
+
+---
+
+## Async Tests
+
+Async Funktion
+```ts
+it('should fetch something', async () => {
+    const data = await fetchFromAPI();
+    expect(data).toEqual(...);
+});
+```
+
+Callback
+```ts
+it('should fetch something', done => {
+    fetchFromAPI().then((data) => {
+        expect(data).toEqual(...);
+        done();
+    });
+})
+```
+
 ---
 
 ## Gruppieren von Tests
@@ -133,46 +174,18 @@ describe('Thousands separator', () => {
 
 ## Matchers
 
-Gleichheit
-```js
+```ts
 expect(x).toBe(y); // Exakte Gleichheit
 expect(x).toEqual(y); // Inhaltliche Gleichheit
-```
 
-Wahrheit
-```js
 expect(x).toBeUndefined();
-expect(x).not.toBeUndefined();
-expect(x).toBeNull();
+expect(x).not.toBeUndefined(); // negieren mit not
 
 expect(x).toBeTruthy();
-expect(x).toBeFalsy();
-```
----
-
-## Matchers
-
-Zahlen
-```js
 expect(x).toBeGreatherThan(y);
-expect(x).toBeLessThanOrEqual(y);
-```
 
-Arrays und Exceptions
-```js
 expect(x).toContain(y);
 expect(x).toThrow(myError);
-```
-
----
-
-## Async Tests
-
-```js
-it('should fetch something', async () => {
-    const data = await fetchFromAPI();
-    expect(data).toEqual(...);
-});
 ```
 
 ---
@@ -180,13 +193,14 @@ it('should fetch something', async () => {
 ## Component Tests Setup
 
 * @testing-library/react-native
-* @testing-library/jest-native
+* @testing-library/jest-native (optional für zusätzliche Matcher)
 * react-test-renderer
 
 ```
 npm install --save-dev @testing-library/react-native @testing-library/jest-native react-test-renderer
 ```
 
+Wenn @testing-library/jest-native genutzt wird:
 jest.config.json
 ```json
 {
@@ -214,6 +228,27 @@ it('should add thousand separators to the price', () => {
     render(<Product item={{ id: '1', name: 'Foo', price: 234599 }} />);
 
     expect(screen.getByText('2,345.99€')).toBeOnTheScreen();
+});
+```
+
+---
+
+## Komplexer Render Test
+
+### Snapshot Testing
+
+- Konvertiert den gerenderten Output zu JSON
+- JSON string wird in VCS mit aufgenommen
+- Test vergleicht beide strings
+- Für größeren Render Output
+
+```ts
+it('renders correctly', () => {
+    const tree = renderer
+        .create(<Product item={{ id: '1', name: 'Foo', price: 234599 }} />)
+        .toJSON();
+        
+    expect(tree).toMatchSnapshot();
 });
 ```
 
