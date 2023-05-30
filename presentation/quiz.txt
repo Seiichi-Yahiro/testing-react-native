@@ -4,3 +4,17 @@ B. expect(x).toEqual(y)
 C. expect(x).toContain(y)
 D. expect(x).toStrictEqual(y)
 ANSWER: A
+
+Was ist snapshot testing?
+A. Testen von Benutzerinteraktionen
+B. Testen von Asynchronen Funktionen
+C. Testen von Component-Rendering
+D. Testen von API Integration
+ANSWER: C
+
+Was sind Motivationen fürs Testen?
+A. Verbessern der App Permormance
+B. Reduzierung der Entwicklungszeit
+C. Verbessern des UI Designs
+D. Verbessern der Code Qualität
+ANSWER: B, D
