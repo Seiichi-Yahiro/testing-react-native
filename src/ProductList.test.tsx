@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import ProductList, { Product } from './ProductList';
 import '@testing-library/jest-native/extend-expect';
 import { ProductI } from './ProductListTypes';
+import renderer from 'react-test-renderer';
 
 describe('Product List', () => {
     afterEach(() => jest.restoreAllMocks());
@@ -134,6 +135,17 @@ describe('Product List', () => {
             expect(orangeJuice).toBeOnTheScreen();
             expect(apple).not.toBeOnTheScreen();
             expect(appleJuice).not.toBeOnTheScreen();
+        });
+    });
+
+    describe('Snapshot', () => {
+        test('Product snapshot', () => {
+            const tree = renderer
+                .create(
+                    <Product item={{ id: '1', name: 'Foo', price: 234599 }} />
+                )
+                .toJSON();
+            expect(tree).toMatchSnapshot();
         });
     });
 });

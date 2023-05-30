@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Product List Snapshot Product snapshot 1`] = `
+<View
+  style={
+    {
+      "borderBottomColor": "#ccc",
+      "borderBottomWidth": 1,
+      "padding": 10,
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "fontSize": 18,
+        "fontWeight": "bold",
+      }
+    }
+  >
+    Foo
+  </Text>
+  <Text
+    style={
+      {
+        "color": "#666",
+        "fontSize": 16,
+      }
+    }
+  >
+    2,345.99
+    €
+  </Text>
+</View>
+`;
