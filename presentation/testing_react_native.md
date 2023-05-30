@@ -135,6 +135,24 @@ yarn test
 
 ---
 
+## Matchers
+
+```ts
+expect(x).toBe(y); // Exakte Gleichheit
+expect(x).toEqual(y); // Inhaltliche Gleichheit
+
+expect(x).toBeUndefined();
+expect(x).not.toBeUndefined(); // negieren mit not
+
+expect(x).toBeTruthy();
+expect(x).toBeGreatherThan(y);
+
+expect(x).toContain(y);
+expect(x).toThrow(myError);
+```
+
+---
+
 ## Async Tests
 
 Async Funktion
@@ -159,34 +177,28 @@ it('should fetch something', done => {
 
 ## Gruppieren von Tests
 
-```js
-describe('Thousands separator', () => {
-    it(...);
-    it(...);
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+<div>
 
-    describe('floats', () => {
+```js
+describe('Product List', () => {
+    it('should render the data from the api');
+    it('should inform when product list is empty');
+    ...
+
+    describe('Product', () => {
+        it('should display the product name');
         ...
     });
+
+    ...
 });
 ```
-
----
-
-## Matchers
-
-```ts
-expect(x).toBe(y); // Exakte Gleichheit
-expect(x).toEqual(y); // Inhaltliche Gleichheit
-
-expect(x).toBeUndefined();
-expect(x).not.toBeUndefined(); // negieren mit not
-
-expect(x).toBeTruthy();
-expect(x).toBeGreatherThan(y);
-
-expect(x).toContain(y);
-expect(x).toThrow(myError);
-```
+</div>
+    <div>
+        <img src="grouping_tests.jpg">
+    </div>
+</div>
 
 ---
 
@@ -195,9 +207,10 @@ expect(x).toThrow(myError);
 * @testing-library/react-native
 * @testing-library/jest-native (optional für zusätzliche Matcher)
 * react-test-renderer
+* @types/react-test-renderer
 
 ```
-npm install --save-dev @testing-library/react-native @testing-library/jest-native react-test-renderer
+npm install --save-dev @testing-library/react-native @testing-library/jest-native react-test-renderer @types/react-test-renderer
 ```
 
 Wenn @testing-library/jest-native genutzt wird:
@@ -222,6 +235,17 @@ jest.config.json
 ---
 
 ## Einfacher Render Test
+
+```tsx
+const Product: React.FC<ProductProps> = ({ item }) => (
+    <View style={styles.product}>
+        <Text style={styles.productName}>{item.name}</Text>
+        <Text style={styles.productPrice}>
+            {addThousandsSeparators((item.price / 100).toString())}€
+        </Text>
+    </View>
+);
+```
 
 ```tsx
 it('should add thousand separators to the price', () => {
@@ -259,17 +283,25 @@ it('renders correctly', () => {
 Erstellung eines Objektes, das den Funktionsumfang von realen Objekten nachahmt.
 
 ```ts
-const mockedPlay = jest.fn();
-const videoPlayerButtons = { play: mockedPlay, stop: () => {...} };
-const mockedStop = jest.spyOn(videoPlayerButtons, 'stop');
+const {data: products, status, retry} = useFetch<ProductI[]>('https://api.example.com/products');
+```
 
-mockedPlay.mockReturnValue(42);
-mockedStop.mockImplementation((x) => x + 42);
+```tsx
+import * as useFetch from './useFetch';
 
-const videoPlayer = new VideoPlayer(videoPlayerButtons);
+const mockedReturnData: ProductI[] = [
+    { id: '1', name: 'Apple', price: 199 },
+    { id: '2', name: 'Orange', price: 299 },
+];
 
-expect(mockedPlay).toHaveBeenCalledTimes(1);
-expect(mockedStop).toHaveBeenCalledWith(8);
+jest.spyOn(useFetch, 'default').mockReturnValueOnce({
+    status: useFetch.FetchStatus.Successful,
+    data: mockedReturnData,
+    retry: () => {},
+});
+
+render(<ProductList />);
+expect(screen.getByText('Apple')).toBeOnTheScreen();
 ```
 
 ---
@@ -326,11 +358,40 @@ it('should be able to retry a failed api call', () => {
 
 ## Zusammenfassung
 
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div>
+
+### Tests schreiben
+- Dateiname: `myComponent.test.ts`
+- `test` / `it`
+- Gruppieren: `describe`
+- `expect().to...`
+
+### Render Tests
+- `render(<Component/>)`
+- Snapshot für komplexen Output
+    </div>
+    <div>
+### Mocking
+Nachahmung des Funktionsumfangs realer Objekte: `jest.fn()`, `jest.spyOn()`
+
+### Interaktion
+- Button press: `fireEvent.press`
+- TextInput: `fireEvent.changeText`
+- Scroll: `fireEvent.scroll`
+    </div>
+</div>
+
+
+
+
+
 ---
 
 ## Quellen
 ### Webseiten:
 
-Jest: [https://jestjs.io](https://jestjs.io)
-React Native Testing Library: [https://callstack.github.io/react-native-testing-library/](https://callstack.github.io/react-native-testing-library/)
-React Native: [https://reactnative.dev/docs/testing-overview](https://reactnative.dev/docs/testing-overview)
+Jest: [jestjs.io](https://jestjs.io)
+Jest Native: [github.com/testing-library/jest-native](https://github.com/testing-library/jest-native)
+React Native Testing Library: [callstack.github.io/react-native-testing-library/](https://callstack.github.io/react-native-testing-library/)
+React Native: [reactnative.dev/docs/testing-overview](https://reactnative.dev/docs/testing-overview)

@@ -1,0 +1,6 @@
+Wie prüft man ob 2 Objekte identisch sind (selber Pointer)?
+A. expect(x).toBe(y)
+B. expect(x).toEqual(y)
+C. expect(x).toContain(y)
+D. expect(x).toStrictEqual(y)
+ANSWER: A
