@@ -18,3 +18,17 @@ B. Reduzierung der Entwicklungszeit
 C. Verbessern des UI Designs
 D. Verbessern der Code Qualität
 ANSWER: B, D
+
+Welche Events sind auf fireEvent vorgefertigt?
+A. scroll
+B. focus
+C. press
+D. longPress
+ANSWER: A, C
+
+Was ist Mocking?
+A. Simulieren von Benutzerinteraktionen
+B. Testen der Performanz
+C. Nachahmung des Funktionsumfangs eines Objektes
+D. Automatisierte Generierung von Testberichten
+ANSWER: C
