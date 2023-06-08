@@ -24,8 +24,6 @@ class:
     }
 </style>
 
----
-
 ## Motivation
 
 - Code-Qualität
@@ -153,7 +151,7 @@ expect(x).toThrow(myError);
 
 ---
 
-## Async Tests
+<!-- ## Async Tests
 
 Async Funktion
 ```ts
@@ -173,7 +171,7 @@ it('should fetch something', done => {
 })
 ```
 
----
+--- -->
 
 ## Gruppieren von Tests
 
@@ -278,7 +276,33 @@ it('renders correctly', () => {
 
 ---
 
-## Mocking
+## Interaktion
+
+Vordefinierte Events
+```ts
+const button = screen.getByText('Press me');
+fireEvent.press(button);
+
+fireEvent.changeText(input, 'new Text');
+
+fireEvent.scroll(scrollView, {
+  nativeEvent: {
+    contentOffset: {
+      y: 200,
+    },
+  },
+});
+```
+
+Beliebige Events
+```ts
+fireEvent(button, 'pressIn');
+fireEvent(button, 'longPress');
+```
+
+---
+
+<!-- ## Mocking
 
 Erstellung eines Objektes, das den Funktionsumfang von realen Objekten nachahmt.
 
@@ -304,41 +328,22 @@ render(<ProductList />);
 expect(screen.getByText('Apple')).toBeOnTheScreen();
 ```
 
----
-
-## Interaktion
-
-Vordefinierte Events
-```ts
-fireEvent.press(button);
-
-fireEvent.changeText(input, 'new Text');
-
-fireEvent.scroll(scrollView, {
-  nativeEvent: {
-    contentOffset: {
-      y: 200,
-    },
-  },
-});
-```
-
-Beliebige Events
-```ts
-fireEvent(button, 'pressIn');
-fireEvent(button, 'longPress');
-```
-
----
+--- -->
 
 ## Mocking und Interaktion
 
+Erstellung eines Objektes, das den Funktionsumfang von realen Objekten nachahmt.
+
+```ts
+const {data: products, status, retry} = useFetch<ProductI[]>('https://api.example.com/products');
+```
+
 ```tsx
 import * as useFetch from './useFetch';
-
 it('should be able to retry a failed api call', () => {
-    const retry = jest.fn();
-
+    const retry = jest.fn(); // mocked function
+    
+    // mocked return value of useFetch
     jest.spyOn(useFetch, 'default').mockReturnValueOnce({
         status: useFetch.FetchStatus.Failed,
         retry,
@@ -348,7 +353,6 @@ it('should be able to retry a failed api call', () => {
 
     const retryButton = screen.getByText('Retry');
     expect(retryButton).toBeOnTheScreen();
-
     fireEvent.press(retryButton);
     expect(retry).toBeCalledTimes(1);
 });
