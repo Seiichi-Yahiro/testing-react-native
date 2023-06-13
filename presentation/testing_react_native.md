@@ -81,25 +81,33 @@ jest.config.json
 
 ---
 
-## Tests anlegen
+## Tests anlegen: Ordner Struktur
 
-Tests daneben
-```
-src/myComponent.ts
-src/myComponent.test.ts
-```
+<style>
+    .test-image-container {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        align-items: center;
+    }
+</style>
 
-Tests daneben in einem Ordner
-```
-src/components/myComponent.ts
-src/components/__tests__/myComponent.test.ts
-```
+<div style="display: flex; flex-direction: row; flex-wrap: wrap;">
+    <div class="test-image-container">
+        <div>Daneben</div>
+        <img src="test_next_to_component.jpg"/>
+    </div>
+    <div class="test-image-container">
+        <div>Daneben in einem Ordner</div>
+        <img src="tests_in_folder_next_to_components.jpg"/>
+    </div>
+    <div class="test-image-container">
+        <div>In eigenem Ordner</div>
+        <img src="tests_in_separate_folder.jpg"/>
+    </div>
+</div>
 
-Tests in eigenem Ordner
-```
-src/components/myComponent.ts
-__tests__/components/myComponent.test.ts
-```
+
 
 
 ---
