@@ -73,9 +73,6 @@ jest.config.json
 ```json
 {
     "preset": "jest-expo", // "react-native" ohne expo 
-    "coverageReporters": [
-      "html"
-    ]
 }
 ```
 
@@ -108,26 +105,18 @@ jest.config.json
 </div>
 
 
-
-
 ---
 
-## Tests schreiben
+## Tests schreiben: Unit Tests
 
+- Testen einzelner Komponenten / Funktionen
+- Unabhängig voneinander
+- `it` / `test` (synonym)
 
 ```js
 it('should add thousands separators to integers', () => {
     const result = addThousandsSeparators('1234567890');
     const expected = '1,234,567,890';
-
-    expect(result).toBe(expected);
-});
-```
-
-```js
-test('floats should not have thousands separators after the decimal point', () => {
-    const result = addThousandsSeparators('12345.67890');
-    const expected = '12,345.67890';
 
     expect(result).toBe(expected);
 });
@@ -181,7 +170,7 @@ it('should fetch something', done => {
 
 --- -->
 
-## Gruppieren von Tests
+## Gruppieren von Tests mit `Describe`
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
 <div>
@@ -268,6 +257,7 @@ it('should add thousand separators to the price', () => {
 ### Snapshot Testing
 
 - Konvertiert den gerenderten Output zu JSON
+- Gespeichert in `__snapshots__/<File>.test.tsx.snap`
 - JSON string wird in VCS mit aufgenommen
 - Test vergleicht beide strings
 - Für größeren Render Output
@@ -393,10 +383,6 @@ Nachahmung des Funktionsumfangs realer Objekte: `jest.fn()`, `jest.spyOn()`
 - Scroll: `fireEvent.scroll`
     </div>
 </div>
-
-
-
-
 
 ---
 
