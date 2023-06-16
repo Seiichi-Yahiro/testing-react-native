@@ -44,6 +44,7 @@ class:
 - Trennen von Logic und UI
 - Test Driven Development
 
+![bg right:40% 90%](Testing_case.svg)
 
 ---
 
