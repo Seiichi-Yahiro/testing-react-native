@@ -12,6 +12,8 @@ class:
 
 ![bg 65%](diagram_testing.svg)
 
+<!-- _footer: 'Julian Viechter, Moritz Kummer' -->
+
 ---
 
 <!-- paginate: true -->
@@ -199,10 +201,10 @@ describe('Product List', () => {
 
 ## Component Tests Setup
 
-* @testing-library/react-native
-* @testing-library/jest-native (optional für zusätzliche Matcher)
-* react-test-renderer
-* @types/react-test-renderer
+- @testing-library/react-native
+- @testing-library/jest-native (optional für zusätzliche Matcher)
+- react-test-renderer
+- @types/react-test-renderer
 
 ```
 npm install --save-dev @testing-library/react-native @testing-library/jest-native react-test-renderer @types/react-test-renderer
@@ -252,15 +254,28 @@ it('should add thousand separators to the price', () => {
 
 ---
 
+## Queries
+
+Tests sollten so ähnlich wie möglich dazu sein, wie Benutzer mit dem Code Interagieren.
+
+```tsx
+screen.getByText(...) // Empfohlene Methode
+screen.getByDisplayValue(...) // TextInput
+screen.getByPlaceholderText(...) // TextInput
+...
+screen.getByTestId(...) // Geht immer aber nicht empfohlen
+```
+
+---
+
 ## Komplexer Render Test
 
 ### Snapshot Testing
 
 - Konvertiert den gerenderten Output zu JSON
 - Gespeichert in `__snapshots__/<File>.test.tsx.snap`
-- JSON string wird in VCS mit aufgenommen
-- Test vergleicht beide strings
-- Für größeren Render Output
+- JSON string wird in VCS mit aufgenommen und beim Testen verglichen
+- Gut zum absichern gegen unerwartete Änderungen
 
 ```ts
 it('renders correctly', () => {
