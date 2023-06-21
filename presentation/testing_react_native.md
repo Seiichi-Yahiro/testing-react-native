@@ -257,14 +257,18 @@ it('should add thousand separators to the price', () => {
 
 ## Queries
 
-Tests sollten so ähnlich wie möglich dazu sein, wie Benutzer mit dem Code Interagieren.
+Tests sollten so ähnlich wie möglich dazu sein, wie Benutzer mit dem Code / Komponente / Screen Interagieren.
 
 ```tsx
 screen.getByText(...) // Empfohlene Methode
 screen.getByDisplayValue(...) // TextInput
 screen.getByPlaceholderText(...) // TextInput
 ...
-screen.getByTestId(...) // Geht immer aber nicht empfohlen
+
+screen.getByRole(...) // Accessibility Role für z.B.Screen Reader
+
+<ActivityIndicator testID={'unique-id'}/>
+screen.getByTestId('unique-id') // Geht immer aber nicht empfohlen
 ```
 
 ---
