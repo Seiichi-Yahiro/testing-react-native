@@ -5,30 +5,23 @@ C. expect(x).toContain(y)
 D. expect(x).toStrictEqual(y)
 ANSWER: A
 
-Was ist snapshot testing?
-A. Testen von Benutzerinteraktionen
-B. Testen von Asynchronen Funktionen
-C. Testen von Component-Rendering
+Was ist Snapshot-Testing?
+A. Testen von Component-Rendering
+B. Testen von Benutzerinteraktionen
+C. Testen von Asynchronen Funktionen
 D. Testen von API Integration
-ANSWER: C
+ANSWER: A
 
 Was sind Motivationen fürs Testen?
-A. Verbessern der App Permormance
-B. Reduzierung der Entwicklungszeit
-C. Verbessern des UI Designs
-D. Verbessern der Code Qualität
-ANSWER: B, D
-
-Welche Events sind auf fireEvent vorgefertigt?
-A. scroll
-B. focus
-C. press
-D. longPress
-ANSWER: A, C
+A. Reduzierung der Entwicklungszeit
+B. Verbessern der Code Qualität
+C. Verbessern der App Performance
+D. Verbessern des UI Designs
+ANSWER: A, B
 
 Was ist Mocking?
-A. Simulieren von Benutzerinteraktionen
-B. Testen der Performanz
-C. Nachahmung des Funktionsumfangs eines Objektes
+A. Nachahmung des Funktionsumfangs eines Objektes
+B. Simulieren von Benutzerinteraktionen
+C. Testen der Performanz
 D. Automatisierte Generierung von Testberichten
-ANSWER: C
+ANSWER: A
